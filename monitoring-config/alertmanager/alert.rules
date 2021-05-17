@@ -1,0 +1,18 @@
+groups:
+- name: alert.rules
+  rules:
+  - alert: service_down
+    expr: up == 0
+    annotations:
+      description: '{{ $labels.instance }} is down'
+      summary: Instance {{ $labels.instance }} is down
+  - alert: request_rate
+    expr: rate(null_demoOneTimer_seconds_count[1m]) > 0
+    annotations:
+      description: '{{ $labels.instance }} of job {{ $labels.job }} is facing high request rate.'
+      summary: Instance {{ $labels.instance }} receiving too many request
+  - alert: high_load
+    expr: node_load1 > 0.5
+    annotations:
+      description: '{{ $labels.instance }} of job {{ $labels.job }} is under high load.'
+      summary: Instance {{ $labels.instance }} under high load

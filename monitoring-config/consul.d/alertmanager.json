@@ -1,0 +1,19 @@
+{
+  "service": {
+    "name": "alertmanager",
+    "address": "alertmanager",
+    "port": 9093,
+    "tags": [
+      "alerts",
+      "monitoring"
+    ],
+    "checks": [
+      {
+        "id": "metrics",
+        "name": "Prometheus Alert Manager Metrics",
+        "http": "http://alertmanager:9093/metrics",
+        "interval": "10s"
+      }
+    ]
+  }
+}

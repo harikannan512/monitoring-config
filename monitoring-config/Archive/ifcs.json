@@ -1,0 +1,19 @@
+{
+  "service": {
+    "id": "ifcs-server",
+    "address": "localhost",
+    "name": "ifcs-server",
+    "port": 8080,
+    "tags": ["ifcs", "jws", "monitoring"],
+    "meta": {
+      "protocol": "http",
+      "localHostname": "localhost",
+      "INCOMING_INTERFACE_RX": "/IFCSServiceDelegates/IncomingInterfaceService",
+      "MS_BATCHREQUEST": "/IFCSServiceDelegates/BatchJobRunnerService",
+      "MS_OUTGOING_INTERFACE": "/IFCSServiceDelegates/OutgoingInterfaceService",
+      "IFCS_EXCHANGE_RATE": "/IFCSServiceDelegates/ExchangeRateService",
+      "IFCS_SEMANTIC_LAYER_SERVICE": "/IFCSServiceDelegates/SemanticLayerService",
+      "IFCS_STORED_REPORTS_URL": "/IFCSServiceDelegates/StoredReportsService?httpClient.socketTimeout=10000&bridgeEndpoint=true"
+    }
+  }
+}

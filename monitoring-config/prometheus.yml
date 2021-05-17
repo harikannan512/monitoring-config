@@ -1,0 +1,96 @@
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - timeout: 10s
+      api_version: v1
+      path_prefix: /
+      consul_sd_configs:
+      - server: 'consul:8500'
+      relabel_configs:
+        - source_labels: [__meta_consul_tags]
+          regex: .*,alerts,.*
+          action: keep
+        - source_labels: [__meta_consul_service]
+          target_label: job
+        - source_labels: ['__meta_consul_service_address', '__meta_consul_service_port']
+          separator: ':'
+          regex: '(.*)'
+          target_label: '__address__'
+          replacement: '$1'
+          action: replace
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - "/etc/prometheus/alert.rules"
+  # - 'rules.yml'
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+
+  #Scan docker containers and add them - only configs that contain the tag monitoring
+  - job_name: dockerscanners
+    consul_sd_configs:
+      - server: 'consul:8500'
+    relabel_configs:
+      - source_labels: [__meta_consul_tags]
+        regex: .*,monitoring,.*
+        action: keep
+      - source_labels: [__meta_consul_service]
+        target_label: job
+      - source_labels: ['__meta_consul_service_address', '__meta_consul_service_port']
+        separator: ':'
+        regex: '(.*)'
+        target_label: '__address__'
+        replacement: '$1'
+        action: replace
+  #Scan spring microservice containers and add them - only configs that contain the tag spring
+  - job_name: springscanners
+    consul_sd_configs:
+      - server: 'consul:8500'
+    relabel_configs:
+      - source_labels: [__meta_consul_tags]
+        regex: .*,spring,.*
+        action: keep
+      - source_labels: [__meta_consul_service]
+        target_label: job
+      - source_labels: ['__meta_consul_service_address', '__meta_consul_service_port']
+        separator: ':'
+        regex: '(.*)'
+        target_label: '__address__'
+        replacement: '$1'
+        action: replace
+      - source_labels: [__metrics_path__]
+        separator: ;
+        regex: /metrics
+        target_label: __metrics_path__
+        replacement: /actuator/prometheus
+        action: replace
+      - source_labels: [__meta_consul_service_id]
+        target_label: serviceId
+
+
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: spring
+    metrics_path: /actuator/prometheus
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    # todo: use consul service discovery
+    # 
+    # static_configs:
+    # - targets: ['demoone:8087', 'demotwo:8088']

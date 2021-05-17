@@ -1,0 +1,15 @@
+route:
+  group_by: [cluster]
+  group_wait: 5s
+  group_interval: 60s
+  repeat_interval: 2m
+  receiver: datadog
+  routes:
+  - match:
+      severity: datadog
+    receiver: datadog
+receivers:
+- name: datadog
+  webhook_configs:
+  - send_resolved: true
+    url: https://app.datadoghq.com/intake/webhook/prometheus?api_key=<API_KEY>

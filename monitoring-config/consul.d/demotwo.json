@@ -1,0 +1,16 @@
+{
+  "service": {
+    "name": "demo-two-spring",
+    "address": "demo-two-spring",
+    "port": 39001,
+    "tags": ["spring"],
+    "checks": [
+      {
+        "id": "demotwo-metrics",
+        "name": "demotwo-metrics",
+        "http": "http://demo-two-spring:39001/actuator/health",
+        "interval": "10s"
+      }
+    ]
+  }
+}

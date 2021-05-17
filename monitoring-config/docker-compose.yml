@@ -1,0 +1,109 @@
+version: "3"
+
+services:
+  demo-one-spring:
+    image: docker.io/spring-app/alert-demo-one
+    ports:
+      - 39000:39000
+    depends_on:
+      - consul
+
+  demo-two-spring:
+    image: docker.io/spring-app/alert-demo-two
+    ports:
+      - 39001:39001
+    depends_on:
+      - consul
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./alertmanager/alert.rules:/etc/prometheus/alert.rules
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - ./datasource.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    depends_on:
+      - prometheus
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    ports:
+      - 9093:9093
+    volumes:
+      - ./alertmanager/alertmanager.yml:/alertmanager.yml
+    command: ["--config.file=/alertmanager.yml"]
+
+  consul:
+    image: consul:latest
+    restart: unless-stopped
+    expose:
+      - 8600/udp
+      - 8500
+      - 8400
+      - 8300
+    ports:
+      - "8300:8300"
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:8600"
+      - "8600:8600/udp"
+    volumes:
+      - ./consul.d/:/consul/config:rw
+    environment:
+      - CONSUL_BOOTSTRAP_EXPECT=3
+      - CONSUL_CLIENT_LAN_ADDRESS=0.0.0.0
+      - CONSUL_DISABLE_KEYRING_FILE=true
+      - CONSUL_RETRY_JOIN=consul
+    command: [ "consul", "agent", "-bootstrap-expect=1", "-server", "-data-dir=/consul/data", "-config-dir=/consul/config", "-bind={{ GetInterfaceIP \"eth0\" }}", "-client=0.0.0.0", "-ui"]
+
+  datadog:
+    image: gcr.io/datadoghq/agent:7
+    labels:
+      com.datadoghq.ad.logs: '["<LOGS_CONFIG>"]'
+    environment:
+      - DD_API_KEY=<API_KEY>
+      - DD_SITE=datadoghq.com
+      - DD_HOSTNAME=w701092-dd-docker
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+    expose:
+      - 8125
+      - 8126
+      - 5000
+      - 5001
+      - 5002
+      - 6062
+      - 38879
+    ports:
+      - 8125:8125/udp
+      - 8126:8126
+      - 5000:5000
+      - 5001:5001
+      - 5002:5002
+      - 6062:6062
+      - 38879:38879
+    depends_on:
+      - prometheus
+    volumes:
+      - ./datadog/datadog.yaml:/etc/datadog-agent/Datadog/datadog.yaml
+      - ./datadog/openmetrics.yaml:/etc/datadog-agent/conf.d/openmetrics.yaml
+      - ./datadog/consul.yaml:/etc/datadog-agent/conf.d/consul.yaml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    expose:
+      - 9100
+    ports:
+      - 9100:9100

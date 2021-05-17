@@ -1,0 +1,18 @@
+{
+  "service": {
+    "id": "icp-core",
+    "name": "icp-core",
+    "address": "localhost",
+    "port": 6060,
+    "tags": ["icp", "jws", "monitoring"],
+    "meta": {
+      "protocol": "http",
+      "localHostname": "localhost",
+      "IcpIf20DTransactionDataImpl": "/icp/ms/trans/IcpIf20DTransactionDataImpl",
+      "IE_GL_REPORT_INTERFACE": "/icp/ms/invrep/IcpIf42GeneralLedgerImpl",
+      "IFCS_ICPInvoiceTriggerDataExtract_Interface": "/icp/ms/invrep/IcpIf11InvoiceRequestImpl",
+      "ICP_EXCHANGE_RATE": "/icp/ms/core/IcpIf32ExchangeRateImpl",
+      "Icp_Transaction_Reconcile": "/icp/ms/trans/IcpIfBulkMessageIndicatorImpl"
+    }
+  }
+}

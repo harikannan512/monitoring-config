@@ -1,0 +1,17 @@
+{
+  "service": {
+    "name": "demo-one-spring",
+    "address": "demo-one-spring",
+    "port": 39000,
+    "tags": ["spring"],
+    "checks": [
+      {
+        "id": "demoone-metrics",
+        "name": "demoone-metrics",
+        "http": "http://demo-one-spring:39000/actuator/health",
+        "interval": "10s"
+      }
+    ]
+
+  }
+}
