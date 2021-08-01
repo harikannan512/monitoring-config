@@ -18,7 +18,7 @@ The compose file will set up a service discovery emvironment using Consul by Has
 ### [Prometheus](https://github.com/prometheus/prometheus/blob/main/README.md#prometheus)
 Prometheus is a time series database and a system monitoring service which scrapes and exposes application metrics at `/actuator/prometheus` endpoint.
 
-### [Grafana] (https://github.com/grafana/grafana#readme)
+### [Grafana](https://github.com/grafana/grafana#readme)
 Grafana allows you to query, visualize, alert on and understand your metrics no matter where they are stored.
 
 ## References
