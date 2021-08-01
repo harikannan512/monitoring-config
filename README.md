@@ -13,7 +13,7 @@ mvn clean package
 docker build -t spring-app/alert-demo-one .
 ```
 
-The compose file will set up a service discovery emvironment using Consul by Hashicorp, along with monitoring and alerting for all the services using Prometheus, Grafana and Alert Manager.
+The compose file will set up a service discovery environment using Consul by Hashicorp, along with monitoring and alerting for all the services using Prometheus, Grafana and Alert Manager.
 
 ### [Prometheus](https://github.com/prometheus/prometheus/blob/main/README.md#prometheus)
 Prometheus is a time series database and a system monitoring service which scrapes and exposes application metrics at `/actuator/prometheus` endpoint.
