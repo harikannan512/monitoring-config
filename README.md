@@ -1,4 +1,4 @@
-# Mointoring and Health Check using Prometheus
+# Monitoring and Health Check using Prometheus
 
 ### How to use
 Run the docker-compose file 
